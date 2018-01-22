@@ -26,24 +26,81 @@ body {
   /* color: #ccc; */
 }
 
-h1 {}
+h1 {
+  margin: 0;
+}
 
 h2 {}
 
 h3 {}
 
 
-
-
 /* ---- layout ---- */
-
-
-
-
+.game-top{
+  width: 100%;
+  height: 350px;
+  background: #555;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: flex;
+}
+.left-col{
+  background: #ccc;
+  flex: 1 0 25%; 
+}
+.card-deck{
+  margin-bottom: 50px;
+}
+.main-col{
+  background: #ddd;
+  flex: 1 0 50%; 
+}
+.right-col{
+  background: #ccc;
+  flex: 1 0 25%;   
+}
+.game-bottom{
+  width: 100%;
+  /* height: 100px; */
+  background: #777;
+  display: flex;
+  justify-content: space-around;
+}
+.game-bottom button{
+  padding: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
 
 /* ---- components ---- */
 
-
-#splash {
+#site-main{
+  max-width: 960px;
+  min-height: 600px;
+  margin: 0 auto;
   text-align: center;
+  background: #bbb;
+}
+
+@media (min-width:768px){
+  #site-main{
+    padding: 50px;
+  }
+}
+
+.small-deck{
+  width: 75px;
+}
+.big-deck{
+  width: 150px;
+}
+.current-card{
+  height: 250px;
+  background: #ccc;
+  margin: 0 10px;
+}
+#remaining-cards{
+  color: blue;
 }

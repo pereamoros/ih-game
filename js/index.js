@@ -3,10 +3,8 @@
 function main() {
 
   var mainElement = document.querySelector('#site-main');
-
   var stage;
-  var game;
-
+  
   // -- SPLASH
 
   var splashElement;
@@ -46,19 +44,26 @@ function main() {
   }
 
   // -- GAME
+  //var game;
 
   function buildGame() {
     stage = 'game';
     game = new Game(mainElement);
-
-    window.setTimeout(function () {
+    game.onEnd = function(score) {
       destroyGame();
       buildGameOver();
-    }, 2000);
+      console.log('score', score);
+    }
+
+    // window.setTimeout(function () {
+    //   destroyGame();
+    //   buildGameOver();
+    // }, 2000);
   }
 
   function destroyGame() {
     game.destroy();
+    console.log('destroyed');
   }
 
   // -- GAME OVER
@@ -81,10 +86,6 @@ function main() {
     title.innerText = 'Dead Already?';
     gameOverElement.appendChild(title);
 
-    // var yourScore = document.createElement('h2');
-    // yourScore.innerText = 'your score: ' + game.score;
-    // gameOverElement.appendChild(yourScore);
-
     playAgainButton = document.createElement('button');
     playAgainButton.innerText = 'Play Again';
     gameOverElement.appendChild(playAgainButton);
@@ -106,5 +107,5 @@ function main() {
   buildSplash();
 
 }
-
+var game; //global scope to access it and be able to pass variables in functions in it
 window.onload = main;
