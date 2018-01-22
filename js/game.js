@@ -3,54 +3,67 @@
 function Game(mainElement) {
   
   this.mainElement = mainElement;
+  this.buttonOptionOneElement;
+  this.buttonOptionTwoElement;
   this.gameElement;
   this.onEnd;
+  this.deck;
+  this.currentChallenge;
 
   this.score = 10;
 
   console.log("Create the game");
 
   this.buildLayout();
-  this.firstStep();
+  this.startGame();
 }
 
-Game.prototype.firstStep = function() {
+Game.prototype._setupChallengeOne = function() {
   var self = this;
+  self.buttonOptionOneElement.innerText = "Black"
+  self.buttonOptionOneElement.addEventListener('click', self._firstChallengeLogic.bind(self));
+  self.buttonOptionTwoElement.innerText = "Red"
+  self.buttonOptionTwoElement.addEventListener('click', self._firstChallengeLogic.bind(self));
 
-  var deck = new Deck();
-  // Set which player is playing (for now always nº1)
+  self.deck.getNextCard();
+}
 
-  // Deck shows and display it's length
+Game.prototype._firstChallengeLogic = function(e) {
+  var self = this;
+  console.log(e.currentTarget.innerText);
+  console.log(self.deck.currentCard);
+  self.deck.drawCard();
+  self._firstChallengeUpdate();
+}
 
-  var deckLength = deck.cards.length;
-  var deckLengthInput = document.querySelector('#remaining-cards');
-  deckLengthInput.innerText = deckLength;
+Game.prototype._firstChallengeUpdate = function() {
+  var self = this;
+  self.deck.getNextCard();
+}
 
-  // Random card in col Main Element
-  
-  var shufledDeck = deck.shuffleCard(deck.cards);
-  
-  
-  for (var i = 0; i < shufledDeck.length; i++){
-    var cardToTurn = document.querySelector('.big-deck');
-    cardToTurn.addEventListener('click', function(){
-      console.log(shufledDeck[1]);
-      // shufledDeck.splice(shufledDeck[i]);
-      // console.log(shufledDeck.length);
-    })
+Game.prototype._createNextChallenge = function() {
+  var self = this;
+  switch(self.currentChallenge) {
+    case 1:
+      self._setupChallengeOne();
+      break;
+    default:
+      console.log('Not implemented yet');
   }
-  
-  // Click either red or black to know its color value
+}
 
-  // Update score if player got it right
-
-  // Set the picked Card in the right column
+Game.prototype.startGame = function() {
+  var self = this;
+  self.deck = new Deck(self.gameElement);
+  self.currentChallenge = 1;
+  self._createNextChallenge();
 }
 
 Game.prototype.buildLayout = function() {
   //-------- CREATING DOM --------
   // Top Element DOM
   var self = this;
+
   self.gameElement = document.createElement('div');
   var gameTopElement = document.createElement('div');
   gameTopElement.classList.add('game-top');
@@ -83,6 +96,7 @@ Game.prototype.buildLayout = function() {
   deckLengthElement.appendChild(allCardsElement);
   cardDeck.appendChild(deckLengthElement);
   colLeftElement.appendChild(cardDeck);
+
   //    Score DOM
   var scoreElement = document.createElement('div');
   scoreElement.classList.add('player-score');
@@ -117,12 +131,14 @@ Game.prototype.buildLayout = function() {
   gameBottomElement.classList.add('game-bottom');
 
   // First Buttons - a) red or black
-  var firstButton = document.createElement('button');
-  var secondButton = document.createElement('button');
-  firstButton.innerText = 'red';
-  secondButton.innerText = 'black';
-  gameBottomElement.appendChild(firstButton);
-  gameBottomElement.appendChild(secondButton);  
+  self.buttonOptionOneElement = document.createElement('button');
+  self.buttonOptionTwoElement = document.createElement('button');
+  self.buttonOptionOneElement.classList.add('red-button');
+  self.buttonOptionOneElement.innerText = 'red';
+  self.buttonOptionTwoElement.classList.add('black-button');  
+  self.buttonOptionTwoElement.innerText = 'black';
+  gameBottomElement.appendChild(self.buttonOptionOneElement);
+  gameBottomElement.appendChild(self.buttonOptionTwoElement);  
 
   //append to Main Element
   self.gameElement.appendChild(gameBottomElement);
@@ -131,7 +147,6 @@ Game.prototype.buildLayout = function() {
 }
 
 Game.prototype.checkPoints = function() {
-
   //----
   console.log('Checking points');
   this.onEnd(this.score);

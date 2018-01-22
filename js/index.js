@@ -104,7 +104,7 @@ function main() {
     gameOverElement.remove();
   }
 
-  buildSplash();
+  buildGame();
 
 }
 var game; //global scope to access it and be able to pass variables in functions in it
