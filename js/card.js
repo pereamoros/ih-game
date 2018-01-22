@@ -14,18 +14,16 @@ Card.prototype.draw = function() {
   var self = this;
 
   self.container.innerHTML = '';
-
+  //poner las img de cada carta
   var spanValue = document.createElement('span');
-  spanValue.innerText = self.value;
+  spanValue.innerText = self.value + ' of ';
   var spanColor = document.createElement('span');
-  spanColor.innerText = self.color;
+  spanColor.innerText = ' - ' + self.color;
   var spanSuit = document.createElement('span');
   spanSuit.innerText = self.suit;
 
   self.container.appendChild(spanValue);
-  self.container.appendChild(spanColor);
   self.container.appendChild(spanSuit);
-
-  
+  self.container.appendChild(spanColor);
 
 }

@@ -24,21 +24,78 @@ Game.prototype._setupChallengeOne = function() {
   self.buttonOptionOneElement.addEventListener('click', self._firstChallengeLogic.bind(self));
   self.buttonOptionTwoElement.innerText = "Red"
   self.buttonOptionTwoElement.addEventListener('click', self._firstChallengeLogic.bind(self));
-
+  //crear el mensaje con las instrucciones
   self.deck.getNextCard();
 }
 
 Game.prototype._firstChallengeLogic = function(e) {
   var self = this;
-  console.log(e.currentTarget.innerText);
-  console.log(self.deck.currentCard);
+  // console.log(e.currentTarget.innerText);
+  // console.log(self.deck.currentCard);
+  if(e.currentTarget.innerText === self.deck.currentCard.color){
+    console.log('Nice! +1 point');
+    //crear un nuevo mensaje en la interfaz
+  }
+  else{
+    console.log('Wrong you drink');
+    //crear un nuevo mensaje en la interfaz
+  }
   self.deck.drawCard();
+  //BUTTON NEXT --> haura de fer aquesta funcio
   self._firstChallengeUpdate();
 }
 
 Game.prototype._firstChallengeUpdate = function() {
   var self = this;
   self.deck.getNextCard();
+  self.currentChallenge = 2;
+  self._createNextChallenge();
+}
+
+Game.prototype._setupChallengeTwo = function() {
+  var self = this;
+  self.buttonOptionOneElement.innerText = "Higher"
+  self.buttonOptionOneElement.addEventListener('click', self._secondChallengeLogic.bind(self));
+  self.buttonOptionTwoElement.innerText = "Lower"
+  self.buttonOptionTwoElement.addEventListener('click', self._secondChallengeLogic.bind(self));
+
+  self.deck.getNextCard();
+}
+Game.prototype._secondChallengeLogic = function(e) {
+  var self = this;
+  console.log(e.currentTarget.innerText);
+  console.log(self.deck.currentCard);
+  self.deck.drawCard();
+  self._firstChallengeUpdate();
+}
+Game.prototype._secondChallengeUpdate = function() {
+  var self = this;
+  self.deck.getNextCard();
+  self.currentChallenge = 3;
+  self._createNextChallenge();
+}
+
+Game.prototype._setupChallengeThree = function() {
+  var self = this;
+  self.buttonOptionOneElement.innerText = "In between"
+  self.buttonOptionOneElement.addEventListener('click', self._secondChallengeLogic.bind(self));
+  self.buttonOptionTwoElement.innerText = "Outside"
+  self.buttonOptionTwoElement.addEventListener('click', self._secondChallengeLogic.bind(self));
+
+  self.deck.getNextCard();
+}
+Game.prototype._thirdChallengeLogic = function(e) {
+  var self = this;
+  console.log(e.currentTarget.innerText);
+  console.log(self.deck.currentCard);
+  self.deck.drawCard();
+  self._firstChallengeUpdate();
+}
+Game.prototype._thirdChallengeUpdate = function() {
+  var self = this;
+  self.deck.getNextCard();
+  self.currentChallenge = 3;
+  self._createNextChallenge();
 }
 
 Game.prototype._createNextChallenge = function() {
@@ -46,7 +103,13 @@ Game.prototype._createNextChallenge = function() {
   switch(self.currentChallenge) {
     case 1:
       self._setupChallengeOne();
-      break;
+    break;
+    case 2:
+      self._setupChallengeTwo();
+    break;
+    case 3:
+      self._setupChallengeThree();
+    break;
     default:
       console.log('Not implemented yet');
   }
