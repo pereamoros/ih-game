@@ -3,14 +3,15 @@
 function Game(mainElement) {
   
   this.mainElement = mainElement;
+  this.message;
+  this.nextChallengeButton;
   this.buttonOptionOneElement;
   this.buttonOptionTwoElement;
   this.gameElement;
   this.onEnd;
   this.deck;
   this.currentChallenge;
-
-  this.score = 10;
+  this.score;
 
   console.log("Create the game");
 
@@ -20,36 +21,49 @@ function Game(mainElement) {
 
 Game.prototype._setupChallengeOne = function() {
   var self = this;
-  self.buttonOptionOneElement.innerText = "Black"
+  self.message.innerText = "What color would be the next car?";
+  self.buttonOptionOneElement.innerText = "Black";
   self.buttonOptionOneElement.addEventListener('click', self._firstChallengeLogic.bind(self));
-  self.buttonOptionTwoElement.innerText = "Red"
+  self.buttonOptionTwoElement.innerText = "Red";
   self.buttonOptionTwoElement.addEventListener('click', self._firstChallengeLogic.bind(self));
-  //crear el mensaje con las instrucciones
   self.deck.getNextCard();
 }
 
 Game.prototype._firstChallengeLogic = function(e) {
   var self = this;
-  // console.log(e.currentTarget.innerText);
-  // console.log(self.deck.currentCard);
   if(e.currentTarget.innerText === self.deck.currentCard.color){
-    console.log('Nice! +1 point');
-    //crear un nuevo mensaje en la interfaz
+    self.message.innerText = "CORRECT! You can send a drink of beer. +1 point";
+    self.score += 1;
   }
   else{
-    console.log('Wrong you drink');
-    //crear un nuevo mensaje en la interfaz
+    self.message.innerText = "WRONG! You have a drink of beer. -1 point";
+    self.score -= 1;
   }
   self.deck.drawCard();
-  //BUTTON NEXT --> haura de fer aquesta funcio
-  self._firstChallengeUpdate();
+  //to create it
+  //self._updateScoreElement();
+  self.nextChallengeButton.removeAttribute('disabled');
+  self.nextChallengeButton.addEventListener('click', self._firstChallengeUpdate.bind(self));
 }
 
 Game.prototype._firstChallengeUpdate = function() {
   var self = this;
+  self.buttonOptionOneElement.removeEventListener('click', self._firstChallengeLogic);
+  self.buttonOptionTwoElement.removeEventListener('click', self._firstChallengeLogic);
+  self._resetLayout();
+  //to create it
+  //self._showFlippedCard();
   self.deck.getNextCard();
   self.currentChallenge = 2;
   self._createNextChallenge();
+}
+
+Game.prototype._resetLayout = function() {
+  var self = this;
+  var imgCardElement = document.querySelector('.big-deck');
+  imgCardElement.setAttribute('src', './img/back-card.png');
+  // var containerElement = document.querySelector('.current-card');
+  // containerElement.innerText = '';
 }
 
 Game.prototype._setupChallengeTwo = function() {
@@ -118,6 +132,7 @@ Game.prototype._createNextChallenge = function() {
 Game.prototype.startGame = function() {
   var self = this;
   self.deck = new Deck(self.gameElement);
+  self.score = 0;
   self.currentChallenge = 1;
   self._createNextChallenge();
 }
@@ -192,16 +207,28 @@ Game.prototype.buildLayout = function() {
   //Bottom Element
   var gameBottomElement = document.createElement('div');
   gameBottomElement.classList.add('game-bottom');
+  var buttonsElement = document.createElement('div');
+  buttonsElement.classList.add('buttons-container');
+  var messageElement = document.createElement('div');
+  messageElement.classList.add('message-container');
+  self.message = document.createElement('span');
+  self.message.classList.add('message');
+  self.nextChallengeButton = document.createElement('button');
+  self.nextChallengeButton.setAttribute('disabled', 'true');
+  self.nextChallengeButton.classList.add('button-next');
+  self.nextChallengeButton.innerText = 'NEXT';
+  messageElement.appendChild(self.message);
+  messageElement.appendChild(self.nextChallengeButton);
+  gameBottomElement.appendChild(messageElement);
+  gameBottomElement.appendChild(buttonsElement); 
 
   // First Buttons - a) red or black
   self.buttonOptionOneElement = document.createElement('button');
   self.buttonOptionTwoElement = document.createElement('button');
-  self.buttonOptionOneElement.classList.add('red-button');
-  self.buttonOptionOneElement.innerText = 'red';
-  self.buttonOptionTwoElement.classList.add('black-button');  
-  self.buttonOptionTwoElement.innerText = 'black';
-  gameBottomElement.appendChild(self.buttonOptionOneElement);
-  gameBottomElement.appendChild(self.buttonOptionTwoElement);  
+  self.buttonOptionOneElement.classList.add('button-one');
+  self.buttonOptionTwoElement.classList.add('button-two');
+  buttonsElement.appendChild(self.buttonOptionOneElement);
+  buttonsElement.appendChild(self.buttonOptionTwoElement);
 
   //append to Main Element
   self.gameElement.appendChild(gameBottomElement);
