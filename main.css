@@ -130,3 +130,11 @@ h3 {}
 .message{
   margin-right: 15px;
 }
+.flipped-cards-item{
+  border: 1px dashed blue;
+  width: 70px;
+  height: 100px;
+  display: inline-block;
+  margin: 5px;
+  background-size: cover;
+}
