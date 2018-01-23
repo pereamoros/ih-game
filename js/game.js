@@ -1,73 +1,83 @@
 'use strict';
 
-function Game(mainElement) {
-  
-  this.mainElement = mainElement;
-  this.message;
-  this.nextChallengeButton;
-  this.buttonOptionOneElement;
-  this.buttonOptionTwoElement;
-  this.gameElement;
-  this.onEnd;
-  this.deck;
-  this.currentChallenge;
-  this.score;
+function Game(mainElement) {  
+  var self = this;
 
-  console.log("Create the game");
+  self.mainElement = mainElement;
+  self.message;
+  self.nextChallengeButton;
+  self.buttonOptionOneElement;
+  self.buttonOptionTwoElement;
+  self.gameElement;
+  self.onEnd;
+  self.deck;
+  self.currentChallenge;
+  self.score;
+  self.currentScore;
+  self.remainingCardsElement;
 
-  this.buildLayout();
-  this.startGame();
+  self._firstChallengeLogic = function(e) {
+    switch(self.currentChallenge) {
+      case 1:
+        if(e.currentTarget.innerText === self.deck.currentCard.color){
+          self.message.innerText = "CORRECT! You can send a drink of beer. +1 point";
+          self.score += 1;
+        }
+        else{
+          self.message.innerText = "WRONG! You have a drink of beer. -1 point";
+          self.score -= 1;
+        }
+        
+        self.deck.drawCard();
+        self._updateScoreElement();
+        self._updateDeckLength();
+      
+        self.nextChallengeButton.removeAttribute('disabled');
+        self.nextChallengeButton.addEventListener('click', self._firstChallengeUpdate);
+      break;
+      case 2:
+        self._setupChallengeTwo();
+      break;
+      case 3:
+        self._setupChallengeThree();
+      break;
+      default:
+        console.log('Not implemented yet');
+    }
+    
+  }
+
+  self._firstChallengeUpdate = function() {
+    self._resetLayout();
+    //to create it
+    //self._showFlippedCard();
+    self.deck.getNextCard();
+    self.currentChallenge = 2;
+    self._createNextChallenge();
+  }
+
+  self.buildLayout();
+  self.startGame();
 }
 
+/* -- FIRST CHALLENGE -- */
 Game.prototype._setupChallengeOne = function() {
   var self = this;
-  self.message.innerText = "What color would be the next car?";
+  self.message.innerText = "Guess the color of the next card.";
   self.buttonOptionOneElement.innerText = "Black";
-  self.buttonOptionOneElement.addEventListener('click', self._firstChallengeLogic.bind(self));
+  self.buttonOptionOneElement.addEventListener('click', self._firstChallengeLogic);
   self.buttonOptionTwoElement.innerText = "Red";
-  self.buttonOptionTwoElement.addEventListener('click', self._firstChallengeLogic.bind(self));
+  self.buttonOptionTwoElement.addEventListener('click', self._firstChallengeLogic);
   self.deck.getNextCard();
 }
 
-Game.prototype._firstChallengeLogic = function(e) {
-  var self = this;
-  if(e.currentTarget.innerText === self.deck.currentCard.color){
-    self.message.innerText = "CORRECT! You can send a drink of beer. +1 point";
-    self.score += 1;
-  }
-  else{
-    self.message.innerText = "WRONG! You have a drink of beer. -1 point";
-    self.score -= 1;
-  }
-  self.deck.drawCard();
-  //to create it
-  //self._updateScoreElement();
-  self.nextChallengeButton.removeAttribute('disabled');
-  self.nextChallengeButton.addEventListener('click', self._firstChallengeUpdate.bind(self));
-}
-
-Game.prototype._firstChallengeUpdate = function() {
-  var self = this;
-  self.buttonOptionOneElement.removeEventListener('click', self._firstChallengeLogic);
-  self.buttonOptionTwoElement.removeEventListener('click', self._firstChallengeLogic);
-  self._resetLayout();
-  //to create it
-  //self._showFlippedCard();
-  self.deck.getNextCard();
-  self.currentChallenge = 2;
-  self._createNextChallenge();
-}
-
-Game.prototype._resetLayout = function() {
-  var self = this;
-  var imgCardElement = document.querySelector('.big-deck');
-  imgCardElement.setAttribute('src', './img/back-card.png');
-  // var containerElement = document.querySelector('.current-card');
-  // containerElement.innerText = '';
-}
-
+/* -- SECOND CHALLENGE -- */
 Game.prototype._setupChallengeTwo = function() {
   var self = this;
+  //remove key events challenge 1
+  self.buttonOptionOneElement.removeEventListener('click', self._firstChallengeLogic);
+  self.buttonOptionTwoElement.removeEventListener('click', self._firstChallengeLogic);
+  //---- 
   self.buttonOptionOneElement.innerText = "Higher"
   self.buttonOptionOneElement.addEventListener('click', self._secondChallengeLogic.bind(self));
   self.buttonOptionTwoElement.innerText = "Lower"
@@ -80,15 +90,16 @@ Game.prototype._secondChallengeLogic = function(e) {
   console.log(e.currentTarget.innerText);
   console.log(self.deck.currentCard);
   self.deck.drawCard();
-  self._firstChallengeUpdate();
+  //self._firstChallengeUpdate();
 }
+
 Game.prototype._secondChallengeUpdate = function() {
   var self = this;
   self.deck.getNextCard();
   self.currentChallenge = 3;
   self._createNextChallenge();
 }
-
+/* -- THIRD CHALLENGE -- */
 Game.prototype._setupChallengeThree = function() {
   var self = this;
   self.buttonOptionOneElement.innerText = "In between"
@@ -166,11 +177,12 @@ Game.prototype.buildLayout = function() {
   cardDeck.appendChild(imgDeckReverse);
   var deckLengthElement = document.createElement('div');
   deckLengthElement.classList.add('deck-length');
-  var remainingCardsElement = document.createElement('span');
-  remainingCardsElement.setAttribute('id','remaining-cards');
+  self.remainingCardsElement = document.createElement('span');
+  self.remainingCardsElement.setAttribute('id','remaining-cards');
   var allCardsElement = document.createElement('span');
   allCardsElement.innerText = ' / 52';
-  deckLengthElement.appendChild(remainingCardsElement);
+  self.remainingCardsElement.innerText = '52';
+  deckLengthElement.appendChild(self.remainingCardsElement);
   deckLengthElement.appendChild(allCardsElement);
   cardDeck.appendChild(deckLengthElement);
   colLeftElement.appendChild(cardDeck);
@@ -180,10 +192,11 @@ Game.prototype.buildLayout = function() {
   scoreElement.classList.add('player-score');
   var scoreText = document.createElement('span');
   scoreText.innerText = 'SCORE: ';
-  var currentScore = document.createElement('span');
-  currentScore.setAttribute('id','current-score');
+  self.currentScore = document.createElement('span');
+  self.currentScore.setAttribute('id','current-score');
+  self.currentScore.innerText = '0';
   scoreElement.appendChild(scoreText);
-  scoreElement.appendChild(currentScore);
+  scoreElement.appendChild(self.currentScore);
   colLeftElement.appendChild(scoreElement);
 
   //Main Column
@@ -237,9 +250,10 @@ Game.prototype.buildLayout = function() {
 }
 
 Game.prototype.checkPoints = function() {
-  //----
+  var self = this;
+
   console.log('Checking points');
-  this.onEnd(this.score);
+  self.onEnd(self.score);
 
 }
 
@@ -248,3 +262,19 @@ Game.prototype.destroy = function () {
   console.log("Exits the game");
   self.gameElement.remove();
 };
+
+Game.prototype._resetLayout = function() {
+  var self = this;
+  var imgCardElement = document.querySelector('.big-deck');
+  imgCardElement.setAttribute('src', './img/back-card.png');
+}
+
+Game.prototype._updateScoreElement = function(){
+  var self = this;
+  self.currentScore.innerText = self.score;
+}
+
+Game.prototype._updateDeckLength = function(){
+  var self = this;
+  self.remainingCardsElement.innerText = self.deck.cards.length;
+}

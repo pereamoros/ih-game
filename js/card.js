@@ -14,27 +14,17 @@ function Card(value, color, suit, img, container, imgElement) {
 Card.prototype.draw = function() {
   var self = this;
 
-  //self.container.innerHTML = '';
-  //poner las img de cada carta
-
   self.imgElement.setAttribute('src', './img/' + self.img);
 
-  var spanValue = document.createElement('span');
-  spanValue.innerText = self.value + ' of ';
-  var spanColor = document.createElement('span');
-  spanColor.innerText = ' - ' + self.color;
-  var spanSuit = document.createElement('span');
-  spanSuit.innerText = self.suit;
+  // var spanValue = document.createElement('span');
+  // spanValue.innerText = self.value + ' of ';
+  // var spanColor = document.createElement('span');
+  // spanColor.innerText = ' - ' + self.color;
+  // var spanSuit = document.createElement('span');
+  // spanSuit.innerText = self.suit;
 
-  self.container.appendChild(spanValue);
-  self.container.appendChild(spanSuit);
-  self.container.appendChild(spanColor);
-
-}
-
-Card.prototype.resetCard = function() {
-
-  self.container.innerHTML = '';
-  self.imgElement.setAttribute('src', './img/back-card.png');
+  // self.container.appendChild(spanValue);
+  // self.container.appendChild(spanSuit);
+  // self.container.appendChild(spanColor);
 
 }
