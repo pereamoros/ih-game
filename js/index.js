@@ -6,7 +6,6 @@ function main() {
   var stage;
   
   // -- SPLASH
-
   var splashElement;
   var startGameButton;
   var handleStartClick = function () {
@@ -37,15 +36,11 @@ function main() {
   }
 
   function destroySplash() {
-    // unbind click on start play button
     startGameButton.removeEventListener('click', handleStartClick);
-    // remove splash from dom
     splashElement.remove();
   }
 
   // -- GAME
-  //var game;
-
   function buildGame() {
     stage = 'game';
     game = new Game(mainElement);
@@ -54,11 +49,6 @@ function main() {
       buildGameOver();
       console.log('score', score);
     }
-
-    // window.setTimeout(function () {
-    //   destroyGame();
-    //   buildGameOver();
-    // }, 2000);
   }
 
   function destroyGame() {
@@ -67,7 +57,6 @@ function main() {
   }
 
   // -- GAME OVER
-
   var gameOverElement;
   var playAgainButton;
   var handlePlayAgainClick = function () {
@@ -78,7 +67,6 @@ function main() {
   function buildGameOver() {
     stage = 'gameOver';
 
-    // create dom elements
     gameOverElement = document.createElement('div');
     gameOverElement.setAttribute('id', 'game-over');
 
@@ -90,17 +78,13 @@ function main() {
     playAgainButton.innerText = 'Play Again';
     gameOverElement.appendChild(playAgainButton);
 
-    // apppend to site-main
     mainElement.appendChild(gameOverElement);
 
-    // bind click on start play button
     playAgainButton.addEventListener('click', handlePlayAgainClick);
   }
 
   function destroyGameOver() {
-    // unbind click on start play button
     playAgainButton.removeEventListener('click', handlePlayAgainClick);
-    // remove gameOver from dom
     gameOverElement.remove();
   }
 
