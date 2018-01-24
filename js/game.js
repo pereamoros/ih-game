@@ -24,11 +24,11 @@ function Game(mainElement) {
     switch(self.currentChallenge) {
       case 1:
         if(e.currentTarget.innerText === self.deck.currentCard.color){
-          self.message.innerText = "CORRECT! You can send a drink of beer. +1 point";
+          self.message.innerText = "CORRECT it's the same color! You can pick a player to drink. +1 point";
           self.score += 1;
         }
         else{
-          self.message.innerText = "WRONG! You have a drink of beer. -1 point";
+          self.message.innerText = "WRONG color! You have to take a drink. -1 point";
           self.score -= 1;
         }
         self.buttonOptionOneElement.setAttribute('disabled','true');
@@ -40,16 +40,67 @@ function Game(mainElement) {
         self.nextChallengeButton.addEventListener('click', self._challengeUpdate);
       break;
       case 2:
-        //console.log(e.currentTarget.innerText);
-        //   console.log(self.deck.currentCard);
-        //   self.deck.drawCard();
-        //   self._firstChallengeUpdate();
+        if(e.currentTarget.innerText === "HIGHER" && self.deck.cardsFlipped[0].value <= self.deck.currentCard.value){
+          self.message.innerText = "CORRECT ! You can pick a player to drink. +1 point";
+          self.score += 1;
+        }
+        else if(e.currentTarget.innerText === "LOWER" && self.deck.cardsFlipped[0].value > self.deck.currentCard.value){
+          self.message.innerText = "CORRECT ! You can pick a player to drink. +1 point";
+          self.score += 1;
+        }
+        else{
+          self.message.innerText = "WRONG! You have to take a drink. -1 point";
+          self.score -= 1;
+        }
+        self.buttonOptionOneElement.setAttribute('disabled','true');
+        self.buttonOptionTwoElement.setAttribute('disabled','true');
+        self.deck.drawCard();
+        self._updateScoreElement();
+        self._updateDeckLength();
+        self.nextChallengeButton.removeAttribute('disabled');
+        self.nextChallengeButton.addEventListener('click', self._challengeUpdate);
       break;
       case 3:
-      //console.log(e.currentTarget.innerText);
-      //   console.log(self.deck.currentCard);
-      //   self.deck.drawCard();
-      //   self._firstChallengeUpdate();
+        if(self.deck.cardsFlipped[0].value > self.deck.cardsFlipped[1].value){
+
+          if(e.currentTarget.innerText === "IN BETWEEN" && (self.deck.currentCard.value <= self.deck.cardsFlipped[0].value && self.deck.currentCard.value > self.deck.cardsFlipped[1].value)){
+            self.message.innerText = "The card is in between! You can pick a player to drink. +1 point";
+            self.score += 1;
+          }
+          else if(e.currentTarget.innerText === "OUTSIDE OF" && (self.deck.currentCard.value > self.deck.cardsFlipped[0].value || self.deck.currentCard.value <= self.deck.cardsFlipped[1].value)){
+            self.message.innerText = "The card is outside of the previous two! You can pick a player to drink. +1 point";
+            self.score += 1;
+          }
+          else{
+            self.message.innerText = "WRONG! You have to take a drink. -1 point";
+            self.score -= 1;
+          }
+
+        }
+        else if(self.deck.cardsFlipped[0].value < self.deck.cardsFlipped[1].value){
+
+          if(e.currentTarget.innerText === "IN BETWEEN" && (self.deck.currentCard.value <= self.deck.cardsFlipped[1].value && self.deck.currentCard.value > self.deck.cardsFlipped[0].value)){
+            self.message.innerText = "The card is in between! You can pick a player to drink. +1 point";
+            self.score += 1;
+          }
+          else if(e.currentTarget.innerText === "OUTSIDE OF" && (self.deck.currentCard.value > self.deck.cardsFlipped[1].value || self.deck.currentCard.value <= self.deck.cardsFlipped[0].value)){
+            self.message.innerText = "The card is outside of the previous two! You can pick a player to drink. +1 point";
+            self.score += 1;
+          }
+          else{
+            self.message.innerText = "WRONG! You have to take a drink. -1 point";
+            self.score -= 1;
+          }
+
+        }
+        
+        self.buttonOptionOneElement.setAttribute('disabled','true');
+        self.buttonOptionTwoElement.setAttribute('disabled','true');
+        self.deck.drawCard();
+        self._updateScoreElement();
+        self._updateDeckLength();
+        self.nextChallengeButton.removeAttribute('disabled');
+        self.nextChallengeButton.addEventListener('click', self._challengeUpdate);
       break;
       default:
         console.log('Not implemented yet');
@@ -61,23 +112,21 @@ function Game(mainElement) {
     switch(self.currentChallenge) {
       case 1:
         self._resetLayout();
-        //to create it
-        //self._showFlippedCard();
         self.flippedCardOne.setAttribute('style', 'background: url(./img/' + self.deck.cardsFlipped[0].img +'); background-size:cover;');
-        // self.flippedCardOne.style.backgroundSize = 'background-size: cover';
-        // self.deck.getNextCard();
         self.currentChallenge = 2;
         self._createNextChallenge();
       break;
       case 2:
-      //   self.deck.getNextCard();
-      //   self.currentChallenge = 3;
-      //   self._createNextChallenge();
+        self._resetLayout();
+        self.flippedCardTwo.setAttribute('style', 'background: url(./img/' + self.deck.cardsFlipped[1].img +'); background-size:cover;');
+        self.currentChallenge = 3;
+        self._createNextChallenge();
       break;
       case 3:
-      //   self.deck.getNextCard();
-      //   self.currentChallenge = 3;
-      //   self._createNextChallenge();
+      self._resetLayout();
+        self.flippedCardThree.setAttribute('style', 'background: url(./img/' + self.deck.cardsFlipped[2].img +'); background-size:cover;');
+        //self.currentChallenge = 4;
+        // self.checkPoints();
       break;
       default:
         console.log('Not implemented yet');
@@ -110,9 +159,10 @@ Game.prototype._setupChallengeTwo = function() {
   self.buttonOptionOneElement.removeAttribute('disabled');
   self.buttonOptionTwoElement.removeAttribute('disabled');
   self.nextChallengeButton.setAttribute('disabled','true');
-  self.buttonOptionOneElement.innerText = "Higher"
+  self.message.innerText = "Will the next card be higher or lower? (If it's the same value it counts as higher)";
+  self.buttonOptionOneElement.innerText = "Higher";
   self.buttonOptionOneElement.addEventListener('click', self._challengeLogic);
-  self.buttonOptionTwoElement.innerText = "Lower"
+  self.buttonOptionTwoElement.innerText = "Lower";
   self.buttonOptionTwoElement.addEventListener('click', self._challengeLogic);
 
   self.deck.getNextCard();
@@ -124,9 +174,13 @@ Game.prototype._setupChallengeThree = function() {
   self.buttonOptionOneElement.removeEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.removeEventListener('click', self._challengeLogic);
   //---- 
-  self.buttonOptionOneElement.innerText = "In between"
+  self.buttonOptionOneElement.removeAttribute('disabled');
+  self.buttonOptionTwoElement.removeAttribute('disabled');
+  self.nextChallengeButton.setAttribute('disabled','true');
+  self.message.innerText = "Will the next card be in between the previous two or outside of?";
+  self.buttonOptionOneElement.innerText = "In Between"
   self.buttonOptionOneElement.addEventListener('click', self._challengeLogic);
-  self.buttonOptionTwoElement.innerText = "Outside"
+  self.buttonOptionTwoElement.innerText = "Outside of"
   self.buttonOptionTwoElement.addEventListener('click', self._challengeLogic);
 
   self.deck.getNextCard();
