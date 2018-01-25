@@ -22,7 +22,11 @@ function main() {
     var titleH1 = document.createElement('h1');
     titleH1.innerText = "POISON!" ;
     splashElement.appendChild(titleH1);
-
+    var logoImage = document.createElement('img');
+    logoImage.setAttribute('src', './img/poison-logo.png');
+    splashElement.appendChild(logoImage);
+    var breakLine = document.createElement('br');
+    splashElement.appendChild(breakLine);
     startGameButton = document.createElement('button');
     startGameButton.innerText = 'START';
     splashElement.appendChild(startGameButton);
@@ -84,7 +88,7 @@ function main() {
     gameOverElement.remove();
   }
 
-  buildSplash();
+  buildGame();
 
 }
 var game; //global scope to access it and be able to pass variables in functions in it

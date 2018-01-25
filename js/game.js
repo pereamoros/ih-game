@@ -21,6 +21,7 @@ function Game(mainElement) {
   self.flippedCardTwo;
   self.flippedCardThree;
   self.flippedCardFour;
+  self.rulesText;
 
   self.playerOne;
   self.players;
@@ -133,12 +134,6 @@ Game.prototype.startGame = function() {
   self.deck = new Deck(self.gameElement);
   self.score = 0;
   self.currentChallenge = 1;
-
-  self.playerOne = new Player();
-  self.playerOne.name = "Pere";
-  self.players = [];
-
-
   self._createNextChallenge();
 }
 //---GAME FUNCTIONALITY---
@@ -146,7 +141,7 @@ Game.prototype._createNextChallenge = function() {
   var self = this;
   switch(self.currentChallenge) {
     case 1:
-      self._setupChallenge("Guess the color of the next card.", "Black", "Red");
+      self._setupChallenge("Guess the color of the next card.", "Black", "Red", "RED &rarr; Diamonds & Hearts<br>Black &rarr; Spades & Clubs");
     break;
     case 2:
       self._setupChallenge("Will the next card be higher or lower? (If it's the same value it counts as higher)", "Higher", "Lower");
@@ -161,7 +156,7 @@ Game.prototype._createNextChallenge = function() {
       console.log('Not implemented yet');
   }
 }
-Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoText) {
+Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoText, rulesText) {
   var self = this;
   self.buttonOptionOneElement.removeEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.removeEventListener('click', self._challengeLogic);
@@ -173,6 +168,7 @@ Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoT
   self.buttonOptionOneElement.addEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.innerText = buttonTwoText;
   self.buttonOptionTwoElement.addEventListener('click', self._challengeLogic);
+  self.rulesText.innerHtml = rulesText;
   self.deck.getNextCard();
 }
 Game.prototype._challengeUpdateFunction = function(currentCardFlippedElement, cardFlippedImg, nextChallenge) {
@@ -196,7 +192,7 @@ Game.prototype._challengeLogic2 = function() {
 Game.prototype._resetLayout = function() {
   var self = this;
   var imgCardElement = document.querySelector('.big-deck');
-  imgCardElement.setAttribute('src', './img/back-card.png');
+  imgCardElement.setAttribute('src', './img/poison-back-card.png');
 }
 Game.prototype._updateScoreElement = function(){
   var self = this;
@@ -272,7 +268,7 @@ Game.prototype.buildLayout = function() {
   var cardDeck = document.createElement('div');
   cardDeck.classList.add('card-deck');
   var imgDeckReverse = document.createElement('img');
-  imgDeckReverse.setAttribute('src', './img/back-card.png');
+  imgDeckReverse.setAttribute('src', './img/poison-back-card.png');
   imgDeckReverse.classList.add('small-deck');
   cardDeck.appendChild(imgDeckReverse);
   var deckLengthElement = document.createElement('div');
@@ -301,17 +297,11 @@ Game.prototype.buildLayout = function() {
 
   //Main Column
   var currentPlayerElement = document.createElement('div');
-  var currentPlayerTitle = document.createElement('h1');
-  currentPlayerTitle.classList.add('player-name');
-  currentPlayerTitle.innerText = 'Player 1';
-  currentPlayerElement.appendChild(currentPlayerTitle);
   colMainElement.appendChild(currentPlayerElement);
-
   var currentCardPlayedElement = document.createElement('div');
   currentCardPlayedElement.classList.add('current-card');
-
   var imgCardReverse = document.createElement('img');
-  imgCardReverse.setAttribute('src', './img/back-card.png');
+  imgCardReverse.setAttribute('src', './img/poison-back-card.png');
   imgCardReverse.classList.add('big-deck');
   currentCardPlayedElement.appendChild(imgCardReverse);
 
@@ -348,6 +338,7 @@ Game.prototype.buildLayout = function() {
   buttonsElement.appendChild(self.buttonOptionTwoElement);
   buttonsElement.appendChild(self.buttonOptionThreeElement);
   buttonsElement.appendChild(self.buttonOptionFourElement);
+  self.gameElement.appendChild(gameBottomElement);
 
   // --- RIGHT COLUMN
   var flippedCardsElement = document.createElement('div');
@@ -369,8 +360,37 @@ Game.prototype.buildLayout = function() {
   flippedCardsElement.appendChild(self.flippedCardThree);
   flippedCardsElement.appendChild(self.flippedCardFour);
   colRightElement.appendChild(flippedCardsElement);
+
+  // ---- RULES -----
+  var rulesElement = document.createElement('div');
+  rulesElement.classList.add('rules-element');
+  var rulesTitle = document.createElement('h2');
+  rulesTitle.innerText = "GAME RULES";
+  rulesElement.appendChild(rulesTitle);
+  // var rulesFirstIterationOne = document.createElement('p');
+  // rulesFirstIterationOne.textContent = "RED = Diamonds & Hearts";
+  self.rulesText = document.createElement('p');
+  // rulesFirstIterationTwo.innerText = "BLACK = Spades & Clubs";
+  rulesElement.appendChild(self.rulesText);
+  // rulesElement.appendChild(rulesFirstIterationTwo);
+
+  // var rulesSecondIteration = document.createElement('p');
+  // rulesSecondIteration.textContent = "If it's the same value as the previous one it counts as a higher card!";
+  // rulesElement.appendChild(rulesSecondIteration);
+
+  // var rulesThirdIteration = document.createElement('p');
+  // rulesThirdIteration.textContent = "If it's the same value as some of the previous two it counts as in between!";
+  // rulesElement.appendChild(rulesThirdIteration);
+
+  // var rulesThirdIteration = document.createElement('p');
+  // rulesThirdIteration.textContent = "* The highest card is the ACE!";
+  // rulesElement.appendChild(rulesThirdIteration);
+  
+
+  self.gameElement.appendChild(rulesElement);
+
   //append to Main Element
-  self.gameElement.appendChild(gameBottomElement);
+  
   self.mainElement.appendChild(self.gameElement);
   
 }
