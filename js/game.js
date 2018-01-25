@@ -22,6 +22,9 @@ function Game(mainElement) {
   self.flippedCardThree;
   self.flippedCardFour;
 
+  self.playerOne;
+  self.players;
+
   self._challengeLogic = function(e) {
     switch(self.currentChallenge) {
       case 1:
@@ -130,9 +133,15 @@ Game.prototype.startGame = function() {
   self.deck = new Deck(self.gameElement);
   self.score = 0;
   self.currentChallenge = 1;
+
+  self.playerOne = new Player();
+  self.playerOne.name = "Pere";
+  self.players = [];
+
+
   self._createNextChallenge();
 }
-//--GAME FUNCTIONALITY
+//---GAME FUNCTIONALITY---
 Game.prototype._createNextChallenge = function() {
   var self = this;
   switch(self.currentChallenge) {
@@ -221,22 +230,20 @@ Game.prototype._setupChallengeFourButtons = function(messageText, buttonOneText,
 Game.prototype._lastChallengeUpdate = function(currentCardFlippedElement, cardFlippedImg) {
   var self = this;
   self._resetLayout();
+  self.nextChallengeButton.removeEventListener('click', self._challengeUpdate);
   currentCardFlippedElement.setAttribute('style', 'background: url(./img/' + cardFlippedImg +'); background-size:cover;');
   window.setTimeout(function(){
     self.checkPoints();
   }, 5000)
 }
-//--END GAME---
+//---END GAME---
 Game.prototype.checkPoints = function() {
   var self = this;
-
-  console.log('Checking points');
   self.onEnd(self.score);
 
 }
 Game.prototype.destroy = function () {
   var self = this;
-  console.log("Exits the game");
   self.gameElement.remove();
 };
 //---DOM CREATION---
@@ -246,6 +253,7 @@ Game.prototype.buildLayout = function() {
   var self = this;
 
   self.gameElement = document.createElement('div');
+  self.gameElement.classList.add('game-element');
   var gameTopElement = document.createElement('div');
   gameTopElement.classList.add('game-top');
   var colLeftElement = document.createElement('div');

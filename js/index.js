@@ -16,22 +16,19 @@ function main() {
   function buildSplash() {
     stage = 'splash';
 
-    // create dom elements
     splashElement = document.createElement('div');
     splashElement.setAttribute('id', 'splash');
 
     var titleH1 = document.createElement('h1');
-    titleH1.innerText = 'DEADLINE';
+    titleH1.innerText = "POISON!" ;
     splashElement.appendChild(titleH1);
 
     startGameButton = document.createElement('button');
-    startGameButton.innerText = 'start';
+    startGameButton.innerText = 'START';
     splashElement.appendChild(startGameButton);
 
-    // apppend to site-main
     mainElement.appendChild(splashElement);
 
-    // bind click on start play button
     startGameButton.addEventListener('click', handleStartClick);
   }
 
@@ -53,7 +50,6 @@ function main() {
 
   function destroyGame() {
     game.destroy();
-    console.log('destroyed');
   }
 
   // -- GAME OVER
@@ -88,7 +84,7 @@ function main() {
     gameOverElement.remove();
   }
 
-  buildGame();
+  buildSplash();
 
 }
 var game; //global scope to access it and be able to pass variables in functions in it
