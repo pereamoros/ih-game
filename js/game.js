@@ -91,12 +91,12 @@ function Game(mainElement) {
       break;
       case 4:
         if(e.currentTarget.innerText === self.deck.currentCard.suit){
-          self.message.innerText = "GREAT! You can pick a player to drink. +1 point";
-          self.score += 1;
+          self.message.innerText = "GREAT! You can pick a player to drink. +2 points";
+          self.score += 2;
         }
         else{
-          self.message.innerText = "WRONG! You have to take a drink. -1 point";
-          self.score -= 1;
+          self.message.innerText = "WRONG! You have to take a drink. -2 points";
+          self.score -= 2;
         }
         self._challengeLogic2();
       break;
@@ -150,7 +150,7 @@ Game.prototype._createNextChallenge = function() {
       self._setupChallenge("Will the next card be in between the previous two or outside of?", "In Between","Outside of", "If it's the same value as some of the previous two it counts as in between!");
     break;
     case 4:
-      self._setupChallengeFourButtons("Guess the suit of the next card.", "Diamonds","Clubs","Hearts","Spades", "If you do a perfect round (Score = 4) everybody drinks!!");
+      self._setupChallengeFourButtons("Guess the suit of the next card.", "Diamonds","Clubs","Hearts","Spades", "This round is worth double! Don't miss ;)");
     break;
     default:
       console.log('Not implemented yet');
@@ -231,7 +231,7 @@ Game.prototype._lastChallengeUpdate = function(currentCardFlippedElement, cardFl
   currentCardFlippedElement.setAttribute('style', 'background: url(./img/' + cardFlippedImg +'); background-size:cover;');
   window.setTimeout(function(){
     self.checkPoints();
-  }, 5000)
+  }, 2000)
 }
 //---END GAME---
 Game.prototype.checkPoints = function() {

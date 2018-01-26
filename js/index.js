@@ -17,7 +17,7 @@ function main() {
     stage = 'splash';
 
     splashElement = document.createElement('div');
-    splashElement.setAttribute('id', 'splash');
+    splashElement.setAttribute('class', 'splash');
 
     var titleH1 = document.createElement('h1');
     titleH1.innerText = "POISON!" ;
@@ -68,11 +68,11 @@ function main() {
     stage = 'gameOver';
 
     gameOverElement = document.createElement('div');
-    gameOverElement.setAttribute('id', 'game-over');
+    gameOverElement.setAttribute('class', 'game-over');
 
-    var title = document.createElement('h1');
-    title.innerText = 'Dead Already?';
-    gameOverElement.appendChild(title);
+    var gameOverImg = document.createElement('img');
+    gameOverImg.setAttribute('src','./img/game-over.png');
+    gameOverElement.appendChild(gameOverImg);
 
     playAgainButton = document.createElement('button');
     playAgainButton.innerText = 'Play Again';
