@@ -57,11 +57,11 @@ function Game(mainElement) {
       case 3:
         if(self.deck.cardsFlipped[0].value > self.deck.cardsFlipped[1].value){
 
-          if(e.currentTarget.innerText === "IN BETWEEN" && (self.deck.currentCard.value <= self.deck.cardsFlipped[0].value && self.deck.currentCard.value > self.deck.cardsFlipped[1].value)){
+          if(e.currentTarget.innerText === "IN BETWEEN" && (self.deck.currentCard.value <= self.deck.cardsFlipped[0].value && self.deck.currentCard.value >= self.deck.cardsFlipped[1].value)){
             self.message.innerText = "The card is in between! You can pick a player to drink. +1 point";
             self.score += 1;
           }
-          else if(e.currentTarget.innerText === "OUTSIDE OF" && (self.deck.currentCard.value > self.deck.cardsFlipped[0].value || self.deck.currentCard.value <= self.deck.cardsFlipped[1].value)){
+          else if(e.currentTarget.innerText === "OUTSIDE OF" && (self.deck.currentCard.value > self.deck.cardsFlipped[0].value || self.deck.currentCard.value < self.deck.cardsFlipped[1].value)){
             self.message.innerText = "The card is outside of the previous two! You can pick a player to drink. +1 point";
             self.score += 1;
           }
@@ -141,22 +141,22 @@ Game.prototype._createNextChallenge = function() {
   var self = this;
   switch(self.currentChallenge) {
     case 1:
-      self._setupChallenge("Guess the color of the next card.", "Black", "Red", "RED &rarr; Diamonds & Hearts<br>Black &rarr; Spades & Clubs");
+      self._setupChallenge("Guess the color of the next card.", "Black", "Red", "Red &rarr; Diamonds & Hearts<br>Black &rarr; Spades & Clubs");
     break;
     case 2:
-      self._setupChallenge("Will the next card be higher or lower? (If it's the same value it counts as higher)", "Higher", "Lower");
+      self._setupChallenge("Will the next card be higher or lower?", "Higher", "Lower", "If it's the same value as the previous one it counts as a higher card!<br>* The highest card is the ACE!");
     break;
     case 3:
-      self._setupChallenge("Will the next card be in between the previous two or outside of?", "In Between","Outside of");
+      self._setupChallenge("Will the next card be in between the previous two or outside of?", "In Between","Outside of", "If it's the same value as some of the previous two it counts as in between!");
     break;
     case 4:
-      self._setupChallengeFourButtons("Guess the suit of the next card.", "Diamonds","Clubs","Hearts","Spades");
+      self._setupChallengeFourButtons("Guess the suit of the next card.", "Diamonds","Clubs","Hearts","Spades", "If you do a perfect round (Score = 4) everybody drinks!!");
     break;
     default:
       console.log('Not implemented yet');
   }
 }
-Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoText, rulesText) {
+Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoText, rulesMessage) {
   var self = this;
   self.buttonOptionOneElement.removeEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.removeEventListener('click', self._challengeLogic);
@@ -168,7 +168,7 @@ Game.prototype._setupChallenge = function(messageText, buttonOneText, buttonTwoT
   self.buttonOptionOneElement.addEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.innerText = buttonTwoText;
   self.buttonOptionTwoElement.addEventListener('click', self._challengeLogic);
-  self.rulesText.innerHtml = rulesText;
+  self.rulesText.innerHTML = rulesMessage;
   self.deck.getNextCard();
 }
 Game.prototype._challengeUpdateFunction = function(currentCardFlippedElement, cardFlippedImg, nextChallenge) {
@@ -203,7 +203,7 @@ Game.prototype._updateDeckLength = function(){
   self.remainingCardsElement.innerText = self.deck.cards.length;
 }
 //--------LAST CHALLENGE DIFFERENT FUNCTIONS---
-Game.prototype._setupChallengeFourButtons = function(messageText, buttonOneText, buttonTwoText, buttonThreeText, buttonFourText) {
+Game.prototype._setupChallengeFourButtons = function(messageText, buttonOneText, buttonTwoText, buttonThreeText, buttonFourText, rulesText) {
   var self = this;
   self.buttonOptionOneElement.removeEventListener('click', self._challengeLogic);
   self.buttonOptionTwoElement.removeEventListener('click', self._challengeLogic);
@@ -221,6 +221,7 @@ Game.prototype._setupChallengeFourButtons = function(messageText, buttonOneText,
   self.buttonOptionThreeElement.addEventListener('click', self._challengeLogic);
   self.buttonOptionFourElement.innerText = buttonFourText;
   self.buttonOptionFourElement.addEventListener('click', self._challengeLogic);
+  self.rulesText.innerHTML = rulesText;
   self.deck.getNextCard();
 }
 Game.prototype._lastChallengeUpdate = function(currentCardFlippedElement, cardFlippedImg) {
@@ -363,13 +364,14 @@ Game.prototype.buildLayout = function() {
 
   // ---- RULES -----
   var rulesElement = document.createElement('div');
-  rulesElement.classList.add('rules-element');
+  rulesElement.classList.add('rules-element', 'message-container');
   var rulesTitle = document.createElement('h2');
   rulesTitle.innerText = "GAME RULES";
   rulesElement.appendChild(rulesTitle);
   // var rulesFirstIterationOne = document.createElement('p');
   // rulesFirstIterationOne.textContent = "RED = Diamonds & Hearts";
   self.rulesText = document.createElement('p');
+  self.rulesText.classList.add('rules-text');
   // rulesFirstIterationTwo.innerText = "BLACK = Spades & Clubs";
   rulesElement.appendChild(self.rulesText);
   // rulesElement.appendChild(rulesFirstIterationTwo);
